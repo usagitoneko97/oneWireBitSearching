@@ -1,15 +1,70 @@
 #include "unity.h"
 #include "search.h"
+#include "mock_onewireio.h"
+
+#define TRUE  1
+#define FALSE 0
+
+/*constants to use with fake*/
+uint8_t ROM_1[16] = {
+  0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+};
+
+uint8_t ROM_2[16] = {
+   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,0x00,
+};
+
+int result_bit;
+int bytePos = 0;
+unsigned char bitPos = 0x01;
+
+
+int fake_Read(int numOfCalls){
+  printf("OW Read function is being called..\n");
+
+  if(!LastDeviceFlag){
+  if(bytePos<16){
+    printf("ROM_1[bytePos] bitpos = %d\n",(ROM_1[bytePos] & bitPos));
+    result_bit = ((ROM_1[bytePos] & bitPos)>0);
+    bitPos <<= 1;
+    if(bitPos == 0){
+      bytePos++;
+      bitPos =1;
+    }
+    return result_bit;
+  }
+    return -1;
+  }
+  printf("Read function is been called for %d times\n",numOfCalls );
+}
+
+int fake_Write(int numOfCalls){
+  printf("OW Write function is being called..\n");
+}
+
 
 void setUp(void)
 {
+  Read_StubWithCallback(fake_Read);
+  Write_StubWithCallback(fake_Write);
 }
 
 void tearDown(void)
 {
 }
 
-void test_search_NeedToImplement(void)
+
+/*Given these data
+ *|0*62 (assume rest of 62 bit is 0) 1 0 0 0
+ *                                   0 1 0 0
+ *                                   0 0 1 0
+ *                                   0 0 0 1
+
+ *should read these data <true>:<compliment>
+ *00 00 00 10  -1.
+ *01000000
+*/
+void test_search_bit_1_0_expect_(void)
 {
-    TEST_IGNORE_MESSAGE("Need to Implement search");
+    TEST_ASSERT_EQUAL(TRUE, bitSearch());
 }
