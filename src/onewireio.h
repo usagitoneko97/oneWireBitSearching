@@ -6,7 +6,6 @@ int LastDiscrepancy;
 int LastFamilyDiscrepancy;
 int LastDeviceFlag;
 int byte_num;
-int byte_mask;
 unsigned char crc8;
 
 int Read();

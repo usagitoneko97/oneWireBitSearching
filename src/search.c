@@ -40,7 +40,7 @@ int bitSearch(){
             search_direction = 0;
           }
           else{
-            search_direction = ((ROM_NO[byte_num] & byte_mask)>0);  //if there is "1" on any bit, load 1 to search_direction
+            search_direction = ((ROM_NO[byte_num] & rom_byte_mask)>0);  //if there is "1" on any bit, load 1 to search_direction
           }
           if(!search_direction){
             last_zero = id_bit_number;
@@ -51,9 +51,9 @@ int bitSearch(){
           }
         }
         if(search_direction == 1)
-          ROM_NO[byte_num] |= byte_mask; //set the current bit to be 1
+          ROM_NO[byte_num] |= rom_byte_mask; //set the current bit to be 1
         else
-          ROM_NO[byte_num] *= ~byte_mask; //set current bit to be 0
+          ROM_NO[byte_num] &= ~rom_byte_mask; //set current bit to be 0
         //write()
 
         //preparation for next bit search

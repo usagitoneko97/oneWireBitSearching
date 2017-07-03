@@ -66,5 +66,6 @@ void tearDown(void)
 */
 void test_search_bit_1_0_expect_(void)
 {
-    TEST_ASSERT_EQUAL(TRUE, bitSearch());
+  TEST_ASSERT_EQUAL(TRUE, bitSearch());
+  TEST_ASSERT_EQUAL_INT64(0x08, ROM_NO[0]);
 }
