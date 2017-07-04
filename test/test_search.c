@@ -55,14 +55,17 @@ void tearDown(void)
 
 
 /*Given these data
- *|0*62 (assume rest of 62 bit is 0) 1 0 0 0
+ *
+ *|0*61 (assume rest of 61 bit is 0) 1 0 0 0  (0x08)
  *                                   0 1 0 0
  *                                   0 0 1 0
  *                                   0 0 0 1
 
  *should read these data <true>:<compliment>
- *00 00 00 10  -1.
- *01000000
+ *00 00 00 10 |01*61
+ *should put in these to return in fake
+ *01000000  10101010  10101010  10101010  10101010  ...
+ *ROM_1[0]  ROM_1[1]  ROM_1[2]  ROM_1[3]  ROM_1[4]  ...
 */
 void test_search_bit_expect_0x08_LastDisprecancy_3(void)
 {
