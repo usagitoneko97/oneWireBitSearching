@@ -8,7 +8,7 @@
 
 int bitSearch(){
   int id_bit_number;
-  int last_zero, rom_byte_number, search_result;
+  int last_zero, byte_num, search_result;
   int id_bit, cmp_id_bit;
   unsigned char rom_byte_mask, search_direction;
 
@@ -17,7 +17,7 @@ int bitSearch(){
     /*Initialize*/
     id_bit_number = 1;
     last_zero = 0;
-    rom_byte_number = 0;
+    byte_num = 0;
     rom_byte_mask = 1;
     search_result = 0;
     crc8 = 0;
