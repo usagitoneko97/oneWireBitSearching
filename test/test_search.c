@@ -7,10 +7,11 @@
 #define NO_OF_DEVICE  4
 
 /*constants to use with fake*/
-uint8_t ROM [NO_OF_DEVICE-1][16] = {
+uint8_t ROM [NO_OF_DEVICE][16] = {
 {0x40, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},
 {0x80, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},
 {0xA0, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},
+{0xA8, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa}
 };
 
 
@@ -163,5 +164,41 @@ void test_search_bit_expect_ThirdData_LastDisprecancy_1(void)
   TEST_ASSERT_EQUAL(TRUE, bitSearch());
   TEST_ASSERT_EQUAL_INT64(0x02, ROM_NO[0]);
   TEST_ASSERT_EQUAL(1, LastDiscrepancy);
+  TEST_ASSERT_EQUAL(FALSE, LastDeviceFlag);
+}
+
+
+/*Given these data
+ *
+ *|0*61 (assume rest of 61 bit is 0) 1 0 0 0  (0x08)    -first data.  (READ)
+ *                                   0 1 0 0  (0x04)    -second data （READ)
+ *                                   0 0 1 0  (0x02)    -third data   (READ)
+ *                                   0 0 0 1            -forth data
+ *                                         ^
+ *                                   LastDiscrepancy
+ *
+ *should read these data <true>:<compliment>
+ *00 01 01 01 |01*61
+ *should put in these to return in fake
+ *10101000  10101010  10101010  10101010  10101010  ...
+ *ROM_1[0]  ROM_1[1]  ROM_1[2]  ROM_1[3]  ROM_1[4]  ...
+ */
+/*
+ *----------------------------------------------------
+ *NEXT (LAST)
+ *-----
+ *Data to be retrieved: 0x02 (third data)
+ *LastDiscrepancy = 2
+ *LastDeviceFlag = FALSE
+*/
+void test_search_bit_expect_ForthData_LastDisprecancy_0(void)
+{
+  /*Test Initialize*/
+  LastDiscrepancy = 1;
+  LastDeviceFlag = FALSE;
+  ROM_NO[0] = 0x02;
+  TEST_ASSERT_EQUAL(TRUE, bitSearch());
+  TEST_ASSERT_EQUAL_INT64(0x01, ROM_NO[0]);
+  TEST_ASSERT_EQUAL(0, LastDiscrepancy);
   TEST_ASSERT_EQUAL(FALSE, LastDeviceFlag);
 }
