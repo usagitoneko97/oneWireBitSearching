@@ -63,16 +63,18 @@ void tearDown(void)
 
 /*Given these data
  *
- *|0*61 (assume rest of 61 bit is 0) 1 0 0 0  (0x08)    -first data.
- *                                   0 1 0 0            -second data
- *                                   0 0 1 0            -third data
- *                                   0 0 0 1            -forth data
-
+ *|0*61 (assume rest of 61 bit is 0) 1 0 0 0  (0x08)    -first data.                                        0000...1 0 0 0   <---- This path is chosen, data read is 0x08
+ *                                   0 1 0 0            -second data                ->                      0000...0 1 0 0
+ *                                   0 0 1 0            -third data      (after running through search)     0000...0 0 1 0
+ *                                   0 0 0 1            -forth data                                         0000...0 0 0 1
+                                                                                                                     ^
+ *                                            LastDiscrepancy = 0                                                LastDiscrepancy
+                                                                                              points to here so that next search will take the path with "1" (second path)
  *should read these data <true>:<compliment>
- *00 00 00 10 |01*61
+ *00 00 00 10 |01 01 01 01....
  *should put in these to return in fake
- *01000000  10101010  10101010  10101010  10101010  ...
- *ROM_1[0]  ROM_1[1]  ROM_1[2]  ROM_1[3]  ROM_1[4]  ...
+ *01000000  10101010  10101010  10101010  10101010   will send first bit(lsb) of first byte of ROM
+ *ROM[0]     ROM[1]     ROM[2]    ROM[3]    ROM[4]  ...
  */
 
 /*
@@ -96,25 +98,26 @@ void test_search_bit_expect_firstdata_LastDisprecancy_3(void)
 
 /*Given these data
  *
- *|0*61 (assume rest of 61 bit is 0) 1 0 0 0  (0x08)    -first data.  (READ)
- *                                   0 1 0 0            -second data
- *                                   0 0 1 0            -third data
- *                                   0 0 0 1            -forth data
- *                                     ^
- *                                LastDiscrepancy
+ *|0*61 (assume rest of 61 bit is 0) 1 0 0 0  (0x08)    -first data.   (READ)                               0000...1 0 0 0
+ *                                   0 1 0 0            -second data                ->                      0000...0 1 0 0    <---- This path is chosen, data read is 0x04
+ *                                   0 0 1 0            -third data      (after running through search)     0000...0 0 1 0
+ *                                   0 0 0 1            -forth data                                         0000...0 0 0 1
+                                       ^                                                                               ^
+ *                              LastDiscrepancy                                                                  LastDiscrepancy
+                                                                                              points to here so that next search will take the path with "1" (second path)
  *
  *should read these data <true>:<compliment>
- *00 00 00 01 |01*61
+ *00 00 00 01 |01 01 01 01....
  *should put in these to return in fake
- *10000000  10101010  10101010  10101010  10101010  ...
- *ROM_1[0]  ROM_1[1]  ROM_1[2]  ROM_1[3]  ROM_1[4]  ...
+ *10000000  10101010  10101010  10101010  10101010   will send first bit(lsb) of first byte of ROM
+ *ROM[0]     ROM[1]     ROM[2]    ROM[3]    ROM[4]  ...
  */
 
 /*
  *----------------------------------------------------
  *NEXT
  *-----
- *Data retrieved: 0x04 (second data)
+ *Data to be retrieved: 0x04 (second data)
  *LastDiscrepancy = 2
  *LastDeviceFlag = FALSE
 */
@@ -133,18 +136,19 @@ void test_search_bit_expect_SecondData_LastDisprecancy_2(void)
 
 /*Given these data
  *
- *|0*61 (assume rest of 61 bit is 0) 1 0 0 0  (0x08)    -first data.  (READ)
- *                                   0 1 0 0  (0x04)    -second data （READ)
- *                                   0 0 1 0            -third data
- *                                   0 0 0 1            -forth data
- *                                       ^
- *                                 LastDiscrepancy
+ *|0*61 (assume rest of 61 bit is 0) 1 0 0 0  (0x08)    -first data.(READ)                                  0000...1 0 0 0
+ *                                   0 1 0 0            -second data(READ)          ->                      0000...0 1 0 0
+ *                                   0 0 1 0            -third data        (after running through search)   0000...0 0 1 0    <---- This path is chosen, data read is 0x04
+ *                                   0 0 0 1            -forth data                                         0000...0 0 0 1
+                                         ^                                                                               ^
+ *                                LastDiscrepancy                                                                  LastDiscrepancy
+                                                                                              points to here so that next search will take the path with "1" (second path)
  *
  *should read these data <true>:<compliment>
- *00 00 01 01 |01*61
+ *00 00 01 01 |01 01 01 01....
  *should put in these to return in fake
- *10100000  10101010  10101010  10101010  10101010  ...
- *ROM_1[0]  ROM_1[1]  ROM_1[2]  ROM_1[3]  ROM_1[4]  ...
+ *10100000  10101010  10101010  10101010  10101010  will send first bit(lsb) of first byte of ROM
+ *ROM[0]     ROM[1]     ROM[2]    ROM[3]    ROM[4]  ...
  */
 
 /*
@@ -170,18 +174,19 @@ void test_search_bit_expect_ThirdData_LastDisprecancy_1(void)
 
 /*Given these data
  *
- *|0*61 (assume rest of 61 bit is 0) 1 0 0 0  (0x08)    -first data.  (READ)
- *                                   0 1 0 0  (0x04)    -second data （READ)
- *                                   0 0 1 0  (0x02)    -third data   (READ)
- *                                   0 0 0 1            -forth data
- *                                         ^
- *                                   LastDiscrepancy
+ *|0*61 (assume rest of 61 bit is 0) 1 0 0 0  (0x08)    -first data.(READ)                                  0000...1 0 0 0
+ *                                   0 1 0 0            -second data.(READ)           ->                    0000...0 1 0 0
+ *                                   0 0 1 0            -third data (READ) (after running through search)   0000...0 0 1 0
+ *                                   0 0 0 1            -forth data                                         0000...0 0 0 1    <---- This path is chosen, data read is 0x04
+                                           ^
+ *                                  LastDiscrepancy                                                                LastDiscrepancy  = 0
+                                                                                              points to zero so that it will return TRUE to LastDeviceFlag
  *
  *should read these data <true>:<compliment>
- *00 01 01 01 |01*61
+ *00 01 01 01 |01 01 01 01.... *Note:Lsb comes first
  *should put in these to return in fake
- *10101000  10101010  10101010  10101010  10101010  ...
- *ROM_1[0]  ROM_1[1]  ROM_1[2]  ROM_1[3]  ROM_1[4]  ...
+ *10101000  10101010  10101010  10101010  10101010  ...  will send first bit(lsb) of first byte of ROM
+ *ROM[0]     ROM[1]     ROM[2]    ROM[3]    ROM[4]  ...
  */
 /*
  *----------------------------------------------------
@@ -200,5 +205,5 @@ void test_search_bit_expect_ForthData_LastDisprecancy_0(void)
   TEST_ASSERT_EQUAL(TRUE, bitSearch());
   TEST_ASSERT_EQUAL_INT64(0x01, ROM_NO[0]);
   TEST_ASSERT_EQUAL(0, LastDiscrepancy);
-  TEST_ASSERT_EQUAL(FALSE, LastDeviceFlag);
+  TEST_ASSERT_EQUAL(TRUE, LastDeviceFlag);
 }
