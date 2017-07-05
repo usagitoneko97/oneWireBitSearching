@@ -90,7 +90,7 @@ void tearDown(void)
 */
 void test_search_bit_expect_firstdata_LastDisprecancy_3(void)
 {
-  TEST_ASSERT_EQUAL(TRUE, bitSearch());
+  TEST_ASSERT_EQUAL(TRUE, firstSearch());
   TEST_ASSERT_EQUAL_INT64(0x08, ROM_NO[0]);
   TEST_ASSERT_EQUAL(3, LastDiscrepancy);
   TEST_ASSERT_EQUAL(FALSE, LastDeviceFlag);
@@ -225,10 +225,7 @@ void test_search_bit_expect_ForthData_LastDisprecancy_0(void)
 
  void test_search_OW_expect_first_dataThree(void){
    /*reset the variables*/
-   LastDeviceFlag = FALSE;
-   LastDiscrepancy=0;
-   ROM_NO[0] = 0;
-   TEST_ASSERT_EQUAL(TRUE, bitSearch());
+   TEST_ASSERT_EQUAL(TRUE, firstSearch());
    TEST_ASSERT_EQUAL_INT8(0x26, ROM_NO[0]); //0010 0110
    TEST_ASSERT_EQUAL(1, LastDiscrepancy);
    TEST_ASSERT_EQUAL(FALSE, LastDeviceFlag);
@@ -254,7 +251,7 @@ void test_search_bit_expect_ForthData_LastDisprecancy_0(void)
     LastDiscrepancy=1;
     ROM_NO[0] = 0x26;
     TEST_ASSERT_EQUAL(TRUE, bitSearch());
-    TEST_ASSERT_EQUAL_INT8(0x59, ROM_NO[0]); //0010 0110
+    TEST_ASSERT_EQUAL_INT8(0x59, ROM_NO[0]);
     TEST_ASSERT_EQUAL(3, LastDiscrepancy);
     TEST_ASSERT_EQUAL(FALSE, LastDeviceFlag);
   }
@@ -277,7 +274,7 @@ void test_search_bit_expect_ForthData_LastDisprecancy_0(void)
      LastDiscrepancy=3;
      ROM_NO[0] = 0x59;
      TEST_ASSERT_EQUAL(TRUE, bitSearch());
-     TEST_ASSERT_EQUAL_INT8(0x35, ROM_NO[0]); //0010 0110
+     TEST_ASSERT_EQUAL_INT8(0x35, ROM_NO[0]);
      TEST_ASSERT_EQUAL(0, LastDiscrepancy);
      TEST_ASSERT_EQUAL(TRUE, LastDeviceFlag);
    }

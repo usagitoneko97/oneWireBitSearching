@@ -4,7 +4,12 @@
 #define TRUE  1
 #define FALSE 0
 
-
+int firstSearch(){
+  LastDiscrepancy = 0;
+  LastDeviceFlag=FALSE;
+  LastFamilyDiscrepancy = 0;
+  return bitSearch();
+}
 
 int bitSearch(){
   int id_bit_number;
@@ -88,4 +93,25 @@ int bitSearch(){
       search_result = FALSE;
     }
     return search_result;
+}
+
+int targetSetupSearch(unsigned char familyCode){
+    int i;
+    ROM_NO[0] = familyCode;
+    for (i = 1; i < 8; i++)
+      ROM_NO[i] = 0;
+    LastDiscrepancy = 64;
+    LastFamilyDiscrepancy = 0;
+    LastDeviceFlag = FALSE;
+}
+
+void familySkipSetupSearch()
+{
+   // set the Last discrepancy to last family discrepancy
+   LastDiscrepancy = LastFamilyDiscrepancy;
+   LastFamilyDiscrepancy = 0;
+
+   // check for end of list
+   if (LastDiscrepancy == 0)
+      LastDeviceFlag = TRUE;
 }
