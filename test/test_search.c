@@ -268,6 +268,12 @@ void test_search_bit_expect_ForthData_LastDisprecancy_0(void)
    *{0x88, 0xa5, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa};
    */
 
+
+    /* More complex data:
+    * 000...0 1 1 0 1 0 1  --> dataOne
+    * 000...1 0 1 1 0 0 1  --> dataTwo
+    * 000...0 1 0 0 1 1 0  --> dataThree
+    */
    void test_search_OW_expect_third_dataOne(void){
      /*reset the variables*/
      LastDeviceFlag = FALSE;
@@ -277,4 +283,20 @@ void test_search_bit_expect_ForthData_LastDisprecancy_0(void)
      TEST_ASSERT_EQUAL_INT8(0x35, ROM_NO[0]);
      TEST_ASSERT_EQUAL(0, LastDiscrepancy);
      TEST_ASSERT_EQUAL(TRUE, LastDeviceFlag);
+   }
+   /*Target Setup search
+   *Given these data
+   * 000...0 1 0 1  1 1 0 0 0 1 0 1 --> dataOne
+   * 000...1 0 1 1  1 1 0 0 0 1 0 1--> dataTwo
+   * 000...1 0 0 1  0 0 1 0 0 1 1 0 --> dataThree
+   * The only difference is the first 4 bit
+   */
+
+   void test_targetSetupSearch(void){
+      LastDiscrepancy = 64;
+      LastFamilyDiscrepancy = 0;
+      LastDeviceFlag = FALSE;
+      ROM_NO[0] = 0xc5; //family code
+
+      //TODO find ROM value
    }
