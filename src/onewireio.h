@@ -5,7 +5,6 @@ unsigned char ROM_NO[8];
 int LastDiscrepancy;
 int LastFamilyDiscrepancy;
 int LastDeviceFlag;
-int byte_num;
 unsigned char crc8;
 
 int Read();

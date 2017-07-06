@@ -7,7 +7,7 @@
 #define NO_OF_DEVICE  4
 
 /*constants to use with fake*/
-uint8_t ROM [7][16] = {
+uint8_t ReadFromOW [7][16] = {
 {0x40, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //first group
 {0x80, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //second group
 {0xA0, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //third group
@@ -27,13 +27,13 @@ int groupNum = 0;
 int fake_Read(int numOfCalls){
   if(!LastDeviceFlag){
   if(bytePos<16){
-    result_bit = ((ROM[groupNum][bytePos] & bitPos)>0);
+    result_bit = ((ReadFromOW[groupNum][bytePos] & bitPos)>0);
     bitPos <<= 1;
 
     if(bitPos == 0){
       if(bytePos == 15){ //reset byte position
         bytePos = 0;
-        groupNum++; //to next group of data
+        //groupNum++; //to next group of data
         bitPos = 1;
       }
       else{
@@ -90,6 +90,7 @@ void tearDown(void)
 */
 void test_search_bit_expect_firstdata_LastDisprecancy_3(void)
 {
+  groupNum = 0;
   TEST_ASSERT_EQUAL(TRUE, firstSearch());
   TEST_ASSERT_EQUAL_INT64(0x08, ROM_NO[0]);
   TEST_ASSERT_EQUAL(3, LastDiscrepancy);
@@ -127,6 +128,7 @@ void test_search_bit_expect_firstdata_LastDisprecancy_3(void)
 void test_search_bit_expect_SecondData_LastDisprecancy_2(void)
 {
   /*Test Initialize*/
+  groupNum = 1;
   LastDiscrepancy = 3;
   LastDeviceFlag = FALSE;
   ROM_NO[0] = 0x08;
@@ -165,6 +167,7 @@ void test_search_bit_expect_SecondData_LastDisprecancy_2(void)
 void test_search_bit_expect_ThirdData_LastDisprecancy_1(void)
 {
   /*Test Initialize*/
+  groupNum = 2;
   LastDiscrepancy = 2;
   LastDeviceFlag = FALSE;
   ROM_NO[0] = 0x04;
@@ -202,6 +205,7 @@ void test_search_bit_expect_ThirdData_LastDisprecancy_1(void)
 void test_search_bit_expect_ForthData_LastDisprecancy_0(void)
 {
   /*Test Initialize*/
+  groupNum = 3;
   LastDiscrepancy = 1;
   LastDeviceFlag = FALSE;
   ROM_NO[0] = 0x02;
@@ -225,6 +229,7 @@ void test_search_bit_expect_ForthData_LastDisprecancy_0(void)
 
  void test_search_OW_expect_first_dataThree(void){
    /*reset the variables*/
+   groupNum = 4;
    TEST_ASSERT_EQUAL(TRUE, firstSearch());
    TEST_ASSERT_EQUAL_INT8(0x26, ROM_NO[0]); //0010 0110
    TEST_ASSERT_EQUAL(1, LastDiscrepancy);
@@ -247,6 +252,7 @@ void test_search_bit_expect_ForthData_LastDisprecancy_0(void)
 
   void test_search_OW_expect_second_dataTwo(void){
     /*reset the variables*/
+    groupNum = 5;
     LastDeviceFlag = FALSE;
     LastDiscrepancy=1;
     ROM_NO[0] = 0x26;
@@ -276,6 +282,7 @@ void test_search_bit_expect_ForthData_LastDisprecancy_0(void)
     */
    void test_search_OW_expect_third_dataOne(void){
      /*reset the variables*/
+     groupNum = 6;
      LastDeviceFlag = FALSE;
      LastDiscrepancy=3;
      ROM_NO[0] = 0x59;
@@ -293,10 +300,10 @@ void test_search_bit_expect_ForthData_LastDisprecancy_0(void)
    */
 
    void test_targetSetupSearch(void){
-      LastDiscrepancy = 64;
-      LastFamilyDiscrepancy = 0;
-      LastDeviceFlag = FALSE;
-      ROM_NO[0] = 0xc5; //family code
-
-      //TODO find ROM value
+     groupNum = 7;
+     LastDiscrepancy = 64;
+     LastFamilyDiscrepancy = 0;
+     LastDeviceFlag = FALSE;
+     ROM_NO[0] = 0xc5; //family code
+     //TODO find ROM value
    }
