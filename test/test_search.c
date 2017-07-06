@@ -4,10 +4,10 @@
 
 #define TRUE  1
 #define FALSE 0
-#define NO_OF_DEVICE  4
+// #define NO_OF_DEVICE  4
 
 /*constants to use with fake*/
-uint8_t ReadFromOW [7][16] = {
+uint8_t ReadFromOW [8][16] = {
 {0x40, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //first group
 {0x80, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //second group
 {0xA0, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //third group
@@ -15,6 +15,7 @@ uint8_t ReadFromOW [7][16] = {
 {0x94, 0xa6, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //more complex first group
 {0x48, 0x99, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //more complex second group
 {0x88, 0xa5, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //more complex third group
+{0xaa, 0xa5, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},
 };
 
 
@@ -25,27 +26,30 @@ int groupNum = 0;
 
 
 int fake_Read(int numOfCalls){
-  if(!LastDeviceFlag){
-  if(bytePos<16){
-    result_bit = ((ReadFromOW[groupNum][bytePos] & bitPos)>0);
-    bitPos <<= 1;
 
-    if(bitPos == 0){
-      if(bytePos == 15){ //reset byte position
-        bytePos = 0;
-        //groupNum++; //to next group of data
-        bitPos = 1;
-      }
-      else{
-        bytePos++;
-        bitPos =1;
-      }
-    }
+    if(!LastDeviceFlag){
+      if(bytePos<16){
+        result_bit = ((ReadFromOW[groupNum][bytePos] & bitPos)>0);
+        bitPos <<= 1;
+
+        if(bitPos == 0){
+          if(bytePos == 15){ //reset byte position
+            bytePos = 0;
+            //groupNum++; //to next group of data
+            bitPos = 1;
+          }
+          else{
+            bytePos++;
+            bitPos =1;
+          }
+        }
 
     return result_bit;
   }
     return -1;
   }
+
+
 }
 
 int fake_Write(int numOfCalls){
@@ -61,6 +65,45 @@ void setUp(void)
 
 void tearDown(void)
 {
+}
+
+//TODO add documentation
+void test_processOWData_IdBit_cmpBit_00(void){
+  InnerVAR_OW innerVAR_OW;
+  LastDiscrepancy = 0;
+  /*initialize pre value*/
+  innerVAR_OW.id_bit_number = 1;
+  innerVAR_OW.last_zero = 0;
+  innerVAR_OW.rom_byte_num = 0;
+  innerVAR_OW.rom_byte_mask = 1;
+  innerVAR_OW.search_result = 0;
+  innerVAR_OW = processOWData(innerVAR_OW);
+
+  TEST_ASSERT_EQUAL(1, innerVAR_OW.last_zero);
+  TEST_ASSERT_EQUAL(2, innerVAR_OW.id_bit_number);
+  TEST_ASSERT_EQUAL(0, innerVAR_OW.search_result);
+
+}
+
+//TODO add documentation
+void test_processOWData_IdBit_cmpBit_01(void){
+  InnerVAR_OW innerVAR_OW;
+  LastDiscrepancy = 0;
+  groupNum = 7;
+  bitPos = 1;
+  bytePos = 0;
+  /*initialize pre value*/
+  innerVAR_OW.id_bit_number = 1;
+  innerVAR_OW.last_zero = 0;
+  innerVAR_OW.rom_byte_num = 0;
+  innerVAR_OW.rom_byte_mask = 1;
+  innerVAR_OW.search_result = 0;
+  innerVAR_OW = processOWData(innerVAR_OW);
+
+  TEST_ASSERT_EQUAL(0, innerVAR_OW.last_zero);
+  TEST_ASSERT_EQUAL(2, innerVAR_OW.id_bit_number);
+  TEST_ASSERT_EQUAL(0, innerVAR_OW.search_result);
+
 }
 
 
@@ -90,6 +133,9 @@ void tearDown(void)
 */
 void test_search_bit_expect_firstdata_LastDisprecancy_3(void)
 {
+  /*reset bit and byte pos in return value of OW  */
+  bytePos = 0;
+  bitPos = 1;
   groupNum = 0;
   TEST_ASSERT_EQUAL(TRUE, firstSearch());
   TEST_ASSERT_EQUAL_INT64(0x08, ROM_NO[0]);

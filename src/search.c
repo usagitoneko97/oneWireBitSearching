@@ -8,6 +8,9 @@ int firstSearch(){
   LastDiscrepancy = 0;
   LastDeviceFlag=FALSE;
   LastFamilyDiscrepancy = 0;
+  int i;
+  for(i=0;i++;i<8)
+    ROM_NO[i] = 0;
   return bitSearch();
 }
 
