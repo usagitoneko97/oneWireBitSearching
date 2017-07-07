@@ -105,8 +105,8 @@ int bitSearch(){
 
 int targetSetupSearch(unsigned char familyCode){
     int i;
-        ROM_NO[0] = familyCode;
-        for (i = 1; i < 8; i++)
+    ROM_NO[0] = familyCode;
+    for (i = 1; i < 8; i++)
       ROM_NO[i] = 0;
     LastDiscrepancy = 64;
     LastFamilyDiscrepancy = 0;

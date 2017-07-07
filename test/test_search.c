@@ -20,13 +20,24 @@ uint8_t ReadFromOW [10][16] = {
 //1101 1000
 {0x99, 0x58, 0x91, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},
 };
-
+/*unsigned char id_bit[] = {0000110101100...}*/
+/*unsigned char cmp_id_bit[] = {101000101001...}*/
 
 int result_bit;
 int bytePos = 0;
 unsigned char bitPos = 0x01;
 int groupNum = 0;
+uint8_t *fake_id_bits = NULL;
+uint8_t *fake_cmp_id_bits = NULL;
 
+#define getBytePos(x)    ((x) >> 3)
+#define getBitPos(x)     ((x) & 0x7)
+
+void init64BitId(uint8_t *id,uint8_t *cmp_id, uint8_t startBit) {
+  fake_id_bits = id;
+  fake_cmp_id_bits = cmp_id;
+  bitPos = startBit;
+}
 
 int fake_Read(int numOfCalls){
 
@@ -66,8 +77,9 @@ void setUp(void)
   Write_StubWithCallback(fake_Write);
 }
 
-void tearDown(void)
-{
+void tearDown(void) {
+  fake_id = NULL;
+  //bitPos = 1;
 }
 
 InnerVAR_OW initSearchTest(InnerVAR_OW innerVAR_OW){
@@ -89,15 +101,23 @@ InnerVAR_OW initSearchTest(InnerVAR_OW innerVAR_OW){
   return innerVAR_OW;
 }
 
+void test_6Bit_idBit_cmpIdBit(void){
+  char id[]
+}
+
 //TODO add documentation
 void test_processOWData_IdBit_cmpBit_00(void){
   /*initialize test*/
+  //uint8_t id[] = {0xd8, 0xa5, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa};
   InnerVAR_OW innerVAR_OW;
   innerVAR_OW = initSearchTest(innerVAR_OW);
   /*initialize condition for test*/
+//  init64BitId(id, 1);
+
   groupNum = 7;
   bytePos = 0;
   bitPos = 1;
+
   innerVAR_OW = processOWData(innerVAR_OW);
 
   /*checking results*/
