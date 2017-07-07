@@ -7,7 +7,7 @@
 // #define NO_OF_DEVICE  4
 
 /*constants to use with fake*/
-uint8_t ReadFromOW [9][16] = {
+uint8_t ReadFromOW [10][16] = {
 {0x40, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //first group
 {0x80, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //second group
 {0xA0, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //third group
@@ -18,6 +18,7 @@ uint8_t ReadFromOW [9][16] = {
 {0xd8, 0xa5, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //byte to test innew func
 {0xff, 0xa5, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //test no device
 //1101 1000
+{0x99, 0x58, 0x91, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},
 };
 
 
@@ -202,7 +203,7 @@ void test_processOWData_given_00_lastDiscrepency_biggerThan_IDBitNumber_expect_f
   groupNum = 7;
   bytePos = 0;
   bitPos = 1; //0x0100 3th bit
-  /*initialize pre value*/
+    /*checking results*/
   innerVAR_OW = processOWData(innerVAR_OW);
   int ROM_bit_val = ROM_NO[0] &0x01;
   TEST_ASSERT_EQUAL(1, ROM_bit_val);
@@ -214,6 +215,7 @@ void test_processOWData_given_00_lastDiscrepency_biggerThan_IDBitNumber_expect_f
 
 //TODO add documentation
 void test_processOWData_given_00_lastDiscrepency_biggerThan_IDBitNumber_expect_followBack_ROM_NO_value_eq_0(void){
+  /*initialize test*/
   InnerVAR_OW innerVAR_OW;
   innerVAR_OW = initSearchTest(innerVAR_OW);
   /*Initialize condition of test*/
@@ -224,7 +226,7 @@ void test_processOWData_given_00_lastDiscrepency_biggerThan_IDBitNumber_expect_f
   groupNum = 7;
   bytePos = 0;
   bitPos = 1; //0x0100 3th bit
-  /*initialize pre value*/
+    /*checking results*/
   innerVAR_OW = processOWData(innerVAR_OW);
   int ROM_bit_val = ROM_NO[0] &0x01;
   TEST_ASSERT_EQUAL(0, ROM_bit_val);
@@ -475,17 +477,27 @@ void test_search_bit_expect_ForthData_LastDisprecancy_0(void)
    }
    /*Target Setup search
    *Given these data
-   * 000...0 1 0 1  1 1 0 0 0 1 0 1 --> dataOne
+   * 000...0 1 0 1  1 1 0 0 0 1 0 1 --> dataOne   <=====choosen first
    * 000...1 0 1 1  1 1 0 0 0 1 0 1--> dataTwo
    * 000...1 0 0 1  0 0 1 0 0 1 1 0 --> dataThree
    * The only difference is the first 4 bit
+   *10 01 10 01 00 01 10 10   10 00 10 01
+   *10011001 01011000 10010001   10101010 10101010 10101010...
+   *0x99 0x58 0x91 0xaa
    */
 
-   void test_targetSetupSearch(void){
-     groupNum = 7;
+   void test_targetSetupSearch_givenAboveData_expect_dataOne(void){
+     groupNum = 9;
+     bytePos = 0;
+     bitPos = 1;
      LastDiscrepancy = 64;
      LastFamilyDiscrepancy = 0;
      LastDeviceFlag = FALSE;
      ROM_NO[0] = 0xc5; //family code
-     //TODO find ROM value
+     TEST_ASSERT_EQUAL(TRUE, firstSearch());
+     TEST_ASSERT_EQUAL(10, LastDiscrepancy);
+     TEST_ASSERT_EQUAL(FALSE, LastDeviceFlag);
+     TEST_ASSERT_EQUAL(0xc5, ROM_NO[0]);
+     TEST_ASSERT_EQUAL(0x05, ROM_NO[1]);
+
    }
