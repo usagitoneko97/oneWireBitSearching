@@ -8,6 +8,7 @@ struct InnerVAR_OW {
   int id_bit, cmp_id_bit;
   unsigned char search_direction;
   unsigned char rom_byte_mask;
+  int noDevice;
 };
 int firstSearch();
 InnerVAR_OW processOWData(InnerVAR_OW innerVAR_OW);

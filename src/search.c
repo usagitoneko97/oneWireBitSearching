@@ -17,8 +17,10 @@ int firstSearch(){
 InnerVAR_OW processOWData(InnerVAR_OW innerVAR_OW){
   innerVAR_OW.id_bit = Read();
   innerVAR_OW.cmp_id_bit = Read();
-  if(innerVAR_OW.id_bit == 1 && innerVAR_OW.cmp_id_bit == 1)  //no devices
+  if(innerVAR_OW.id_bit == 1 && innerVAR_OW.cmp_id_bit == 1){  //no devices
+    innerVAR_OW.noDevice = TRUE;
     return innerVAR_OW;
+  }
   else{
     if(innerVAR_OW.id_bit != innerVAR_OW.cmp_id_bit){
       innerVAR_OW.search_direction = innerVAR_OW.id_bit;
@@ -77,7 +79,8 @@ int bitSearch(){
     Write(0xF0);
     do{
         innerVAR_OW = processOWData(innerVAR_OW);
-
+        if(innerVAR_OW.noDevice == TRUE)
+          break;
   }while(innerVAR_OW.rom_byte_num<8);
     //done searching
     //if successful

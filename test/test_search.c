@@ -7,7 +7,7 @@
 // #define NO_OF_DEVICE  4
 
 /*constants to use with fake*/
-uint8_t ReadFromOW [8][16] = {
+uint8_t ReadFromOW [9][16] = {
 {0x40, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //first group
 {0x80, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //second group
 {0xA0, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //third group
@@ -15,7 +15,9 @@ uint8_t ReadFromOW [8][16] = {
 {0x94, 0xa6, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //more complex first group
 {0x48, 0x99, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //more complex second group
 {0x88, 0xa5, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //more complex third group
-{0xaa, 0xa5, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},
+{0xd8, 0xa5, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //byte to test innew func
+{0xff, 0xa5, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},   //test no device
+//1101 1000
 };
 
 
@@ -67,45 +69,162 @@ void tearDown(void)
 {
 }
 
-//TODO add documentation
-void test_processOWData_IdBit_cmpBit_00(void){
-  InnerVAR_OW innerVAR_OW;
+InnerVAR_OW initSearchTest(InnerVAR_OW innerVAR_OW){
   LastDiscrepancy = 0;
-  /*initialize pre value*/
+  LastDeviceFlag=FALSE;
+  LastFamilyDiscrepancy = 0;
+  int i = 0;
+  while(i<8){
+    ROM_NO[i++] = 0;
+  }
   innerVAR_OW.id_bit_number = 1;
   innerVAR_OW.last_zero = 0;
   innerVAR_OW.rom_byte_num = 0;
   innerVAR_OW.rom_byte_mask = 1;
   innerVAR_OW.search_result = 0;
+  innerVAR_OW.id_bit = -1;
+  innerVAR_OW.cmp_id_bit = -1;
+  innerVAR_OW.search_direction = 0;
+  return innerVAR_OW;
+}
+
+//TODO add documentation
+void test_processOWData_IdBit_cmpBit_00(void){
+  InnerVAR_OW innerVAR_OW;
+  innerVAR_OW = initSearchTest(innerVAR_OW);
+  /*initialize pre value*/
+  groupNum = 7;
+  bytePos = 0;
+  bitPos = 1;
   innerVAR_OW = processOWData(innerVAR_OW);
 
+  int ROM_bit_val = ROM_NO[0] &0x01; //the 0th bit
   TEST_ASSERT_EQUAL(1, innerVAR_OW.last_zero);
   TEST_ASSERT_EQUAL(2, innerVAR_OW.id_bit_number);
-  TEST_ASSERT_EQUAL(0, innerVAR_OW.search_result);
+  TEST_ASSERT_EQUAL(0, innerVAR_OW.search_direction);
+  TEST_ASSERT_EQUAL(0, ROM_bit_val);
 
 }
 
 //TODO add documentation
 void test_processOWData_IdBit_cmpBit_01(void){
   InnerVAR_OW innerVAR_OW;
+  innerVAR_OW = initSearchTest(innerVAR_OW);
   LastDiscrepancy = 0;
   groupNum = 7;
-  bitPos = 1;
   bytePos = 0;
-  /*initialize pre value*/
-  innerVAR_OW.id_bit_number = 1;
-  innerVAR_OW.last_zero = 0;
-  innerVAR_OW.rom_byte_num = 0;
-  innerVAR_OW.rom_byte_mask = 1;
-  innerVAR_OW.search_result = 0;
+  bitPos = 4;
+  innerVAR_OW = processOWData(innerVAR_OW);
+  int ROM_bit_val = ROM_NO[0] &0x01; //the 0th bit
+  TEST_ASSERT_EQUAL(0, innerVAR_OW.last_zero);
+  TEST_ASSERT_EQUAL(2, innerVAR_OW.id_bit_number);
+  TEST_ASSERT_EQUAL(0, innerVAR_OW.search_direction);
+
+}
+
+//TODO add documentation
+void test_processOWData_IdBit_cmpBit_10(void){
+  InnerVAR_OW innerVAR_OW;
+  innerVAR_OW = initSearchTest(innerVAR_OW);
+  LastDiscrepancy = 0;
+  groupNum = 7;
+  bytePos = 0;
+  bitPos = 16;
   innerVAR_OW = processOWData(innerVAR_OW);
 
   TEST_ASSERT_EQUAL(0, innerVAR_OW.last_zero);
   TEST_ASSERT_EQUAL(2, innerVAR_OW.id_bit_number);
-  TEST_ASSERT_EQUAL(0, innerVAR_OW.search_result);
+  TEST_ASSERT_EQUAL(1, innerVAR_OW.search_direction);
 
 }
 
+//TODO add documentation
+void test_processOWData_IdBit_cmpBit_11(void){
+  InnerVAR_OW innerVAR_OW;
+  innerVAR_OW = initSearchTest(innerVAR_OW);
+  LastDiscrepancy = 0;
+  groupNum = 7;
+  bytePos = 0;
+  bitPos = 64;
+  innerVAR_OW = processOWData(innerVAR_OW);
+
+  TEST_ASSERT_EQUAL(0, innerVAR_OW.last_zero);
+  TEST_ASSERT_EQUAL(1, innerVAR_OW.id_bit_number);
+  TEST_ASSERT_EQUAL(0, innerVAR_OW.search_direction);
+  TEST_ASSERT_EQUAL(FALSE, innerVAR_OW.search_result);
+
+}
+
+//TODO add documentation
+void test_processOWData_given_00_lastDiscrepency_sameAs_IDBitNumber_expect_searchDir_1(void){
+  InnerVAR_OW innerVAR_OW;
+  innerVAR_OW = initSearchTest(innerVAR_OW);
+  /*Initialize condition of test*/
+  //id_bit = cmp_id_bit = 0
+  LastDiscrepancy = 1;
+  innerVAR_OW.id_bit_number = 1;
+  groupNum = 7;
+  bytePos = 0;
+  bitPos = 1; //0x0100 3th bit
+  /*initialize pre value*/
+  innerVAR_OW = processOWData(innerVAR_OW);
+
+  TEST_ASSERT_EQUAL(0, innerVAR_OW.last_zero);
+  TEST_ASSERT_EQUAL(2, innerVAR_OW.id_bit_number);
+  TEST_ASSERT_EQUAL(1, innerVAR_OW.search_direction);
+
+}
+
+//TODO add documentation
+void test_processOWData_given_00_lastDiscrepency_biggerThan_IDBitNumber_expect_followBack_value_eq_1(void){
+  InnerVAR_OW innerVAR_OW;
+  innerVAR_OW = initSearchTest(innerVAR_OW);
+  /*Initialize condition of test*/
+  //id_bit = cmp_id_bit = 0
+  LastDiscrepancy = 3;
+  innerVAR_OW.id_bit_number = 1;
+  ROM_NO[0] |= 0x01;  //set bit 0 to '1'
+  groupNum = 7;
+  bytePos = 0;
+  bitPos = 1; //0x0100 3th bit
+  /*initialize pre value*/
+  innerVAR_OW = processOWData(innerVAR_OW);
+
+  TEST_ASSERT_EQUAL(0, innerVAR_OW.last_zero);
+  TEST_ASSERT_EQUAL(2, innerVAR_OW.id_bit_number);
+  TEST_ASSERT_EQUAL(1, innerVAR_OW.search_direction);
+
+}
+
+//TODO add documentation
+void test_processOWData_given_00_lastDiscrepency_biggerThan_IDBitNumber_expect_followBack_ROM_NO_value_eq_0(void){
+  InnerVAR_OW innerVAR_OW;
+  innerVAR_OW = initSearchTest(innerVAR_OW);
+  /*Initialize condition of test*/
+  //id_bit = cmp_id_bit = 0
+  LastDiscrepancy = 3;
+  innerVAR_OW.id_bit_number = 1;
+  ROM_NO[0] &= 0xfe;  //set bit 0 to '0'
+  groupNum = 7;
+  bytePos = 0;
+  bitPos = 1; //0x0100 3th bit
+  /*initialize pre value*/
+  innerVAR_OW = processOWData(innerVAR_OW);
+
+  TEST_ASSERT_EQUAL(1, innerVAR_OW.last_zero);
+  TEST_ASSERT_EQUAL(2, innerVAR_OW.id_bit_number);
+  TEST_ASSERT_EQUAL(0, innerVAR_OW.search_direction);
+
+}
+
+void test_search_bit_given_idBit_cmp_idBit_11_expect_SearchFail(void)
+{
+  /*reset bit and byte pos in return value of OW  */
+  bytePos = 0;
+  bitPos = 1;
+  groupNum = 8;
+  TEST_ASSERT_EQUAL(FALSE, firstSearch());
+}
 
 /*Given these data
  *
