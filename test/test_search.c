@@ -90,14 +90,16 @@ InnerVAR_OW initSearchTest(InnerVAR_OW innerVAR_OW){
 
 //TODO add documentation
 void test_processOWData_IdBit_cmpBit_00(void){
+  /*initialize test*/
   InnerVAR_OW innerVAR_OW;
   innerVAR_OW = initSearchTest(innerVAR_OW);
-  /*initialize pre value*/
+  /*initialize condition for test*/
   groupNum = 7;
   bytePos = 0;
   bitPos = 1;
   innerVAR_OW = processOWData(innerVAR_OW);
 
+  /*checking results*/
   int ROM_bit_val = ROM_NO[0] &0x01; //the 0th bit
   TEST_ASSERT_EQUAL(1, innerVAR_OW.last_zero);
   TEST_ASSERT_EQUAL(2, innerVAR_OW.id_bit_number);
@@ -108,55 +110,67 @@ void test_processOWData_IdBit_cmpBit_00(void){
 
 //TODO add documentation
 void test_processOWData_IdBit_cmpBit_01(void){
+  /*initialize test*/
   InnerVAR_OW innerVAR_OW;
   innerVAR_OW = initSearchTest(innerVAR_OW);
+  /*initialize condition for test*/
   LastDiscrepancy = 0;
   groupNum = 7;
   bytePos = 0;
   bitPos = 4;
   innerVAR_OW = processOWData(innerVAR_OW);
   int ROM_bit_val = ROM_NO[0] &0x01; //the 0th bit
+  /*checking results*/
   TEST_ASSERT_EQUAL(0, innerVAR_OW.last_zero);
   TEST_ASSERT_EQUAL(2, innerVAR_OW.id_bit_number);
   TEST_ASSERT_EQUAL(0, innerVAR_OW.search_direction);
+  TEST_ASSERT_EQUAL(0, ROM_bit_val);
 
 }
 
 //TODO add documentation
 void test_processOWData_IdBit_cmpBit_10(void){
+  /*initialize test*/
   InnerVAR_OW innerVAR_OW;
   innerVAR_OW = initSearchTest(innerVAR_OW);
+  /*initialize condition for test*/
   LastDiscrepancy = 0;
   groupNum = 7;
   bytePos = 0;
   bitPos = 16;
   innerVAR_OW = processOWData(innerVAR_OW);
-
+  /*checking results*/
+  int ROM_bit_val = ROM_NO[0] &0x01;
   TEST_ASSERT_EQUAL(0, innerVAR_OW.last_zero);
   TEST_ASSERT_EQUAL(2, innerVAR_OW.id_bit_number);
   TEST_ASSERT_EQUAL(1, innerVAR_OW.search_direction);
-
+  TEST_ASSERT_EQUAL(1, ROM_bit_val);
 }
 
 //TODO add documentation
 void test_processOWData_IdBit_cmpBit_11(void){
+    /*initialize test*/
   InnerVAR_OW innerVAR_OW;
   innerVAR_OW = initSearchTest(innerVAR_OW);
+  /*initialize condition for test*/
   LastDiscrepancy = 0;
   groupNum = 7;
   bytePos = 0;
   bitPos = 64;
   innerVAR_OW = processOWData(innerVAR_OW);
-
+    /*checking results*/
+  int ROM_bit_val = ROM_NO[0] &0x01;
   TEST_ASSERT_EQUAL(0, innerVAR_OW.last_zero);
   TEST_ASSERT_EQUAL(1, innerVAR_OW.id_bit_number);
   TEST_ASSERT_EQUAL(0, innerVAR_OW.search_direction);
   TEST_ASSERT_EQUAL(FALSE, innerVAR_OW.search_result);
+  TEST_ASSERT_EQUAL(0, ROM_bit_val);
 
 }
 
 //TODO add documentation
 void test_processOWData_given_00_lastDiscrepency_sameAs_IDBitNumber_expect_searchDir_1(void){
+  /*initialize test*/
   InnerVAR_OW innerVAR_OW;
   innerVAR_OW = initSearchTest(innerVAR_OW);
   /*Initialize condition of test*/
@@ -166,17 +180,18 @@ void test_processOWData_given_00_lastDiscrepency_sameAs_IDBitNumber_expect_searc
   groupNum = 7;
   bytePos = 0;
   bitPos = 1; //0x0100 3th bit
-  /*initialize pre value*/
+  /*checking results*/
   innerVAR_OW = processOWData(innerVAR_OW);
-
+  int ROM_bit_val = ROM_NO[0] &0x01;
+  TEST_ASSERT_EQUAL(1, ROM_bit_val);
   TEST_ASSERT_EQUAL(0, innerVAR_OW.last_zero);
   TEST_ASSERT_EQUAL(2, innerVAR_OW.id_bit_number);
   TEST_ASSERT_EQUAL(1, innerVAR_OW.search_direction);
-
 }
 
 //TODO add documentation
 void test_processOWData_given_00_lastDiscrepency_biggerThan_IDBitNumber_expect_followBack_value_eq_1(void){
+  /*initialize test*/
   InnerVAR_OW innerVAR_OW;
   innerVAR_OW = initSearchTest(innerVAR_OW);
   /*Initialize condition of test*/
@@ -189,7 +204,8 @@ void test_processOWData_given_00_lastDiscrepency_biggerThan_IDBitNumber_expect_f
   bitPos = 1; //0x0100 3th bit
   /*initialize pre value*/
   innerVAR_OW = processOWData(innerVAR_OW);
-
+  int ROM_bit_val = ROM_NO[0] &0x01;
+  TEST_ASSERT_EQUAL(1, ROM_bit_val);
   TEST_ASSERT_EQUAL(0, innerVAR_OW.last_zero);
   TEST_ASSERT_EQUAL(2, innerVAR_OW.id_bit_number);
   TEST_ASSERT_EQUAL(1, innerVAR_OW.search_direction);
@@ -210,7 +226,8 @@ void test_processOWData_given_00_lastDiscrepency_biggerThan_IDBitNumber_expect_f
   bitPos = 1; //0x0100 3th bit
   /*initialize pre value*/
   innerVAR_OW = processOWData(innerVAR_OW);
-
+  int ROM_bit_val = ROM_NO[0] &0x01;
+  TEST_ASSERT_EQUAL(0, ROM_bit_val);
   TEST_ASSERT_EQUAL(1, innerVAR_OW.last_zero);
   TEST_ASSERT_EQUAL(2, innerVAR_OW.id_bit_number);
   TEST_ASSERT_EQUAL(0, innerVAR_OW.search_direction);
