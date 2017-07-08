@@ -116,18 +116,20 @@ void test_6Bit_idBit_cmpIdBit(void){
 }
 
 //TODO add documentation
-void xtest_processOWData_IdBit_cmpBit_00(void){
-  /*initialize test*/
+void test_processOWData_IdBit_cmpBit_00(void){
   //uint8_t id[] = {0xd8, 0xa5, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa};
+  //{0xd8, 0xa5, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa},
+
+  /*initialize test*/
+  uint8_t fake_id_bit_VAL []=       {0};
+  uint8_t fake_cmp_id_bit_VAL[] =   {0};
+  init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
+
   InnerVAR_OW innerVAR_OW;
   innerVAR_OW = initSearchTest(innerVAR_OW);
   /*initialize condition for test*/
 //  init64BitId(id, 1);
-
-  groupNum = 7;
-  bytePos = 0;
-  bitPos = 1;
-
+  init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
   innerVAR_OW = processOWData(innerVAR_OW);
 
   /*checking results*/
@@ -140,15 +142,15 @@ void xtest_processOWData_IdBit_cmpBit_00(void){
 }
 
 //TODO add documentation
-void xtest_processOWData_IdBit_cmpBit_01(void){
+void test_processOWData_IdBit_cmpBit_01(void){
   /*initialize test*/
+  uint8_t fake_id_bit_VAL []=       {0};
+  uint8_t fake_cmp_id_bit_VAL[] =   {1};
+  init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
   InnerVAR_OW innerVAR_OW;
   innerVAR_OW = initSearchTest(innerVAR_OW);
   /*initialize condition for test*/
   LastDiscrepancy = 0;
-  groupNum = 7;
-  bytePos = 0;
-  bitPos = 4;
   innerVAR_OW = processOWData(innerVAR_OW);
   int ROM_bit_val = ROM_NO[0] &0x01; //the 0th bit
   /*checking results*/
@@ -160,15 +162,15 @@ void xtest_processOWData_IdBit_cmpBit_01(void){
 }
 
 //TODO add documentation
-void xtest_processOWData_IdBit_cmpBit_10(void){
+void test_processOWData_IdBit_cmpBit_10(void){
   /*initialize test*/
+  uint8_t fake_id_bit_VAL []=       {1};
+  uint8_t fake_cmp_id_bit_VAL[] =   {0};
+  init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
   InnerVAR_OW innerVAR_OW;
   innerVAR_OW = initSearchTest(innerVAR_OW);
   /*initialize condition for test*/
   LastDiscrepancy = 0;
-  groupNum = 7;
-  bytePos = 0;
-  bitPos = 16;
   innerVAR_OW = processOWData(innerVAR_OW);
   /*checking results*/
   int ROM_bit_val = ROM_NO[0] &0x01;
@@ -179,15 +181,15 @@ void xtest_processOWData_IdBit_cmpBit_10(void){
 }
 
 //TODO add documentation
-void xtest_processOWData_IdBit_cmpBit_11(void){
+void test_processOWData_IdBit_cmpBit_11(void){
     /*initialize test*/
+  uint8_t fake_id_bit_VAL []=       {1};
+  uint8_t fake_cmp_id_bit_VAL[] =   {1};
+  init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
   InnerVAR_OW innerVAR_OW;
   innerVAR_OW = initSearchTest(innerVAR_OW);
   /*initialize condition for test*/
   LastDiscrepancy = 0;
-  groupNum = 7;
-  bytePos = 0;
-  bitPos = 64;
   innerVAR_OW = processOWData(innerVAR_OW);
     /*checking results*/
   int ROM_bit_val = ROM_NO[0] &0x01;
@@ -200,17 +202,17 @@ void xtest_processOWData_IdBit_cmpBit_11(void){
 }
 
 //TODO add documentation
-void xtest_processOWData_given_00_lastDiscrepency_sameAs_IDBitNumber_expect_searchDir_1(void){
+void test_processOWData_given_00_lastDiscrepency_sameAs_IDBitNumber_expect_searchDir_1(void){
   /*initialize test*/
+  uint8_t fake_id_bit_VAL []=       {0};
+  uint8_t fake_cmp_id_bit_VAL[] =   {0};
+  init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
   InnerVAR_OW innerVAR_OW;
   innerVAR_OW = initSearchTest(innerVAR_OW);
   /*Initialize condition of test*/
   //id_bit = cmp_id_bit = 0
   LastDiscrepancy = 1;
   innerVAR_OW.id_bit_number = 1;
-  groupNum = 7;
-  bytePos = 0;
-  bitPos = 1; //0x0100 3th bit
   /*checking results*/
   innerVAR_OW = processOWData(innerVAR_OW);
   int ROM_bit_val = ROM_NO[0] &0x01;
@@ -221,8 +223,11 @@ void xtest_processOWData_given_00_lastDiscrepency_sameAs_IDBitNumber_expect_sear
 }
 
 //TODO add documentation
-void xtest_processOWData_given_00_lastDiscrepency_biggerThan_IDBitNumber_expect_followBack_value_eq_1(void){
+void test_processOWData_given_00_lastDiscrepency_biggerThan_IDBitNumber_expect_followBack_value_eq_1(void){
   /*initialize test*/
+  uint8_t fake_id_bit_VAL []=       {1};
+  uint8_t fake_cmp_id_bit_VAL[] =   {0};
+  init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
   InnerVAR_OW innerVAR_OW;
   innerVAR_OW = initSearchTest(innerVAR_OW);
   /*Initialize condition of test*/
@@ -230,10 +235,7 @@ void xtest_processOWData_given_00_lastDiscrepency_biggerThan_IDBitNumber_expect_
   LastDiscrepancy = 3;
   innerVAR_OW.id_bit_number = 1;
   ROM_NO[0] |= 0x01;  //set bit 0 to '1'
-  groupNum = 7;
-  bytePos = 0;
-  bitPos = 1; //0x0100 3th bit
-    /*checking results*/
+  /*checking results*/
   innerVAR_OW = processOWData(innerVAR_OW);
   int ROM_bit_val = ROM_NO[0] &0x01;
   TEST_ASSERT_EQUAL(1, ROM_bit_val);
@@ -244,8 +246,11 @@ void xtest_processOWData_given_00_lastDiscrepency_biggerThan_IDBitNumber_expect_
 }
 
 //TODO add documentation
-void xtest_processOWData_given_00_lastDiscrepency_biggerThan_IDBitNumber_expect_followBack_ROM_NO_value_eq_0(void){
+void test_processOWData_given_00_lastDiscrepency_biggerThan_IDBitNumber_expect_followBack_ROM_NO_value_eq_0(void){
   /*initialize test*/
+  uint8_t fake_id_bit_VAL []=       {0};
+  uint8_t fake_cmp_id_bit_VAL[] =   {0};
+  init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
   InnerVAR_OW innerVAR_OW;
   innerVAR_OW = initSearchTest(innerVAR_OW);
   /*Initialize condition of test*/
@@ -253,10 +258,7 @@ void xtest_processOWData_given_00_lastDiscrepency_biggerThan_IDBitNumber_expect_
   LastDiscrepancy = 3;
   innerVAR_OW.id_bit_number = 1;
   ROM_NO[0] &= 0xfe;  //set bit 0 to '0'
-  groupNum = 7;
-  bytePos = 0;
-  bitPos = 1; //0x0100 3th bit
-    /*checking results*/
+  /*checking results*/
   innerVAR_OW = processOWData(innerVAR_OW);
   int ROM_bit_val = ROM_NO[0] &0x01;
   TEST_ASSERT_EQUAL(0, ROM_bit_val);
@@ -266,12 +268,12 @@ void xtest_processOWData_given_00_lastDiscrepency_biggerThan_IDBitNumber_expect_
 
 }
 
-void xtest_search_bit_given_idBit_cmp_idBit_11_expect_SearchFail(void)
+void test_search_bit_given_idBit_cmp_idBit_11_expect_SearchFail(void)
 {
   /*reset bit and byte pos in return value of OW  */
-  bytePos = 0;
-  bitPos = 1;
-  groupNum = 8;
+  uint8_t fake_id_bit_VAL []=       {1, 0, 1, 0, 1, 1, 0};
+  uint8_t fake_cmp_id_bit_VAL[] =   {1, 0, 0, 1, 0, 0, 1};
+  init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
   TEST_ASSERT_EQUAL(FALSE, firstSearch());
 }
 
@@ -302,6 +304,9 @@ void xtest_search_bit_given_idBit_cmp_idBit_11_expect_SearchFail(void)
 void xtest_search_bit_expect_firstdata_LastDisprecancy_3(void)
 {
   /*reset bit and byte pos in return value of OW  */
+  // uint8_t fake_id_bit_VAL []=       {0, 0, 0, 1, 0, 0, 0, 0, ..};
+  // uint8_t fake_cmp_id_bit_VAL[] =   {0, 0, 0, 0, 1, 1, 1, 1, ... };
+  //init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
   bytePos = 0;
   bitPos = 1;
   groupNum = 0;
