@@ -301,16 +301,13 @@ void test_search_bit_given_idBit_cmp_idBit_11_expect_SearchFail(void)
  *LastDiscrepancy = 3
  *LastDeviceFlag = FALSE
 */
-void xtest_search_bit_expect_firstdata_LastDisprecancy_3(void)
+void test_search_bit_expect_firstdata_LastDisprecancy_3(void)
 {
   /*reset bit and byte pos in return value of OW  */
-  // uint8_t fake_id_bit_VAL []=       {0, 0, 0, 1, 0, 0, 0, 0, ..};
-  // uint8_t fake_cmp_id_bit_VAL[] =   {0, 0, 0, 0, 1, 1, 1, 1, ... };
-  //init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
-  bytePos = 0;
-  bitPos = 1;
-  groupNum = 0;
-  TEST_ASSERT_EQUAL(TRUE, firstSearch());
+  uint8_t fake_id_bit_VAL []=       {0, 0, 0, 1, 0, 0, 0, 0};
+  uint8_t fake_cmp_id_bit_VAL[] =   {0, 0, 0, 0, 1, 1, 1, 1};
+  init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
+  TEST_ASSERT_EQUAL(TRUE, _bitSearch(1));
   TEST_ASSERT_EQUAL_INT64(0x08, ROM_NO[0]);
   TEST_ASSERT_EQUAL(3, LastDiscrepancy);
   TEST_ASSERT_EQUAL(FALSE, LastDeviceFlag);
@@ -344,14 +341,17 @@ void xtest_search_bit_expect_firstdata_LastDisprecancy_3(void)
  *LastDiscrepancy = 2
  *LastDeviceFlag = FALSE
 */
-void xtest_search_bit_expect_SecondData_LastDisprecancy_2(void)
+void test_search_bit_expect_SecondData_LastDisprecancy_2(void)
 {
   /*Test Initialize*/
-  groupNum = 1;
+  uint8_t fake_id_bit_VAL []=       {0, 0, 0, 0, 0, 0, 0, 0};
+  uint8_t fake_cmp_id_bit_VAL[] =   {0, 0, 0, 1, 1, 1, 1, 1};
+  init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
+
   LastDiscrepancy = 3;
   LastDeviceFlag = FALSE;
   ROM_NO[0] = 0x08;
-  TEST_ASSERT_EQUAL(TRUE, bitSearch());
+  TEST_ASSERT_EQUAL(TRUE, _bitSearch(1));
   TEST_ASSERT_EQUAL_INT64(0x04, ROM_NO[0]);
   TEST_ASSERT_EQUAL(2, LastDiscrepancy);
   TEST_ASSERT_EQUAL(FALSE, LastDeviceFlag);
@@ -383,14 +383,17 @@ void xtest_search_bit_expect_SecondData_LastDisprecancy_2(void)
  *LastDiscrepancy = 2
  *LastDeviceFlag = FALSE
 */
-void xtest_search_bit_expect_ThirdData_LastDisprecancy_1(void)
+void test_search_bit_expect_ThirdData_LastDisprecancy_1(void)
 {
   /*Test Initialize*/
-  groupNum = 2;
+  uint8_t fake_id_bit_VAL []=       {0, 0, 0, 0, 0, 0, 0, 0};
+  uint8_t fake_cmp_id_bit_VAL[] =   {0, 0, 1, 1, 1, 1, 1, 1};
+  init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
+
   LastDiscrepancy = 2;
   LastDeviceFlag = FALSE;
   ROM_NO[0] = 0x04;
-  TEST_ASSERT_EQUAL(TRUE, bitSearch());
+  TEST_ASSERT_EQUAL(TRUE, _bitSearch(1));
   TEST_ASSERT_EQUAL_INT64(0x02, ROM_NO[0]);
   TEST_ASSERT_EQUAL(1, LastDiscrepancy);
   TEST_ASSERT_EQUAL(FALSE, LastDeviceFlag);
@@ -424,11 +427,14 @@ void xtest_search_bit_expect_ThirdData_LastDisprecancy_1(void)
 void xtest_search_bit_expect_ForthData_LastDisprecancy_0(void)
 {
   /*Test Initialize*/
-  groupNum = 3;
+  uint8_t fake_id_bit_VAL []=       {0, 0, 0, 0, 0, 0, 0, 0};
+  uint8_t fake_cmp_id_bit_VAL[] =   {0, 1, 1, 1, 1, 1, 1, 1};
+  init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
+
   LastDiscrepancy = 1;
   LastDeviceFlag = FALSE;
   ROM_NO[0] = 0x02;
-  TEST_ASSERT_EQUAL(TRUE, bitSearch());
+  TEST_ASSERT_EQUAL(TRUE, _bitSearch(1));
   TEST_ASSERT_EQUAL_INT64(0x01, ROM_NO[0]);
   TEST_ASSERT_EQUAL(0, LastDiscrepancy);
   TEST_ASSERT_EQUAL(TRUE, LastDeviceFlag);
@@ -440,22 +446,23 @@ void xtest_search_bit_expect_ForthData_LastDisprecancy_0(void)
  * 000...0 1 0 0 1 1 0  --> ThirdData
  *
  *expected OW read return: <true><Compliment>
- *00 10 10 01 01 10 01 (thirdData)
+ *00 10 10 01   01 10 01 (thirdData)
  *value to be put into array:
  *10010100 10100110 10101010 10101010 10101010...
  *{0x94, 0xC6, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa};
  */
 
- void xtest_search_OW_expect_first_dataThree(void){
+ void test_search_OW_expect_first_dataThree(void){
    /*reset the variables*/
-   groupNum = 4;
-   TEST_ASSERT_EQUAL(TRUE, firstSearch());
+   uint8_t fake_id_bit_VAL []=       {0, 1, 1, 0, 0, 1, 0, 0};
+   uint8_t fake_cmp_id_bit_VAL[] =   {0, 0, 0, 1, 1, 0, 1, 1};
+   init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
+
+   TEST_ASSERT_EQUAL(TRUE, _firstSearch(1));
    TEST_ASSERT_EQUAL_INT8(0x26, ROM_NO[0]); //0010 0110
    TEST_ASSERT_EQUAL(1, LastDiscrepancy);
    TEST_ASSERT_EQUAL(FALSE, LastDeviceFlag);
  }
-
-
 
  /* More complex data:
   * 000...0 1 1 0 1 0 1  --> dataOne
@@ -463,19 +470,22 @@ void xtest_search_bit_expect_ForthData_LastDisprecancy_0(void)
   * 000...0 1 0 0 1 1 0  --> dataThree
   *
   *expected OW read return: <true><Compliment>
-  *00 01 00 10 10 01 10 (thirdData)
+  *00 01 00 10   10 01 10 (thirdData)
   *value to be put into array:
   *01001000 10011001 10101010 10101010 10101010...
   *{0x48, 0x99, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa};
   */
 
-  void xtest_search_OW_expect_second_dataTwo(void){
+  void test_search_OW_expect_second_dataTwo(void){
     /*reset the variables*/
-    groupNum = 5;
+    uint8_t fake_id_bit_VAL []=       {0, 0, 0, 1,  1, 0, 1, 0};
+    uint8_t fake_cmp_id_bit_VAL[] =   {0, 1, 0, 0,  0, 1, 0, 1};
+    init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
+
     LastDeviceFlag = FALSE;
     LastDiscrepancy=1;
     ROM_NO[0] = 0x26;
-    TEST_ASSERT_EQUAL(TRUE, bitSearch());
+    TEST_ASSERT_EQUAL(TRUE, _bitSearch(1));
     TEST_ASSERT_EQUAL_INT8(0x59, ROM_NO[0]);
     TEST_ASSERT_EQUAL(3, LastDiscrepancy);
     TEST_ASSERT_EQUAL(FALSE, LastDeviceFlag);
@@ -487,10 +497,7 @@ void xtest_search_bit_expect_ForthData_LastDisprecancy_0(void)
    * 000...0 1 0 0 1 1 0  --> dataThree
    *
    *expected OW read return: <true><Compliment>
-   *00 01 00 01 10 10 01 (thirdData)
-   *value to be put into array:
-   *10001000 10100101 10101010 10101010 10101010...
-   *{0x88, 0xa5, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa};
+   *00 01 00 01  10 10 01 (thirdData)
    */
 
 
@@ -499,13 +506,16 @@ void xtest_search_bit_expect_ForthData_LastDisprecancy_0(void)
     * 000...1 0 1 1 0 0 1  --> dataTwo
     * 000...0 1 0 0 1 1 0  --> dataThree
     */
-   void xtest_search_OW_expect_third_dataOne(void){
+   void test_search_OW_expect_third_dataOne(void){
      /*reset the variables*/
-     groupNum = 6;
+     uint8_t fake_id_bit_VAL []=       {0, 0, 0, 0,  1, 1, 0, 0};
+     uint8_t fake_cmp_id_bit_VAL[] =   {0, 1, 0, 1,  0, 0, 1, 1};
+     init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
+
      LastDeviceFlag = FALSE;
      LastDiscrepancy=3;
      ROM_NO[0] = 0x59;
-     TEST_ASSERT_EQUAL(TRUE, bitSearch());
+     TEST_ASSERT_EQUAL(TRUE, _bitSearch(1));
      TEST_ASSERT_EQUAL_INT8(0x35, ROM_NO[0]);
      TEST_ASSERT_EQUAL(0, LastDiscrepancy);
      TEST_ASSERT_EQUAL(TRUE, LastDeviceFlag);
@@ -516,20 +526,21 @@ void xtest_search_bit_expect_ForthData_LastDisprecancy_0(void)
    * 000...1 0 1 1  1 1 0 0 0 1 0 1--> dataTwo
    * 000...1 0 0 1  0 0 1 0 0 1 1 0 --> dataThree
    * The only difference is the first 4 bit
-   *10 01 10 01 00 01 10 10   10 00 10 01
+   *10 01 10 01  00 01 10 10   10 00 10 01
    *10011001 01011000 10010001   10101010 10101010 10101010...
    *0x99 0x58 0x91 0xaa
    */
 
-   void xtest_targetSetupSearch_givenAboveData_expect_dataOne(void){
-     groupNum = 9;
-     bytePos = 0;
-     bitPos = 1;
+   void test_targetSetupSearch_givenAboveData_expect_dataOne(void){
+     uint8_t fake_id_bit_VAL []=       {1, 0, 1, 0,  0, 0, 1, 1,  1, 0, 1, 0,  0, 0, 0, 0};
+     uint8_t fake_cmp_id_bit_VAL[] =   {0, 1, 0, 1,  0, 1, 0, 0,  0, 0, 0, 1,  1, 1, 1, 1};
+     init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
+
      LastDiscrepancy = 64;
      LastFamilyDiscrepancy = 0;
      LastDeviceFlag = FALSE;
      ROM_NO[0] = 0xc5; //family code
-     TEST_ASSERT_EQUAL(TRUE, firstSearch());
+     TEST_ASSERT_EQUAL(TRUE, _firstSearch(2));
      TEST_ASSERT_EQUAL(10, LastDiscrepancy);
      TEST_ASSERT_EQUAL(FALSE, LastDeviceFlag);
      TEST_ASSERT_EQUAL(0xc5, ROM_NO[0]);

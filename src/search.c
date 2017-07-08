@@ -13,6 +13,15 @@ int firstSearch() {
     ROM_NO[i] = 0;
   return bitSearch();
 }
+int _firstSearch(int numberOfByte) {
+  LastDiscrepancy = 0;
+  LastDeviceFlag=FALSE;
+  LastFamilyDiscrepancy = 0;
+  int i;
+  for(i=0;i++;i<8)
+    ROM_NO[i] = 0;
+  return _bitSearch(numberOfByte);
+}
 
 InnerVAR_OW processOWData(InnerVAR_OW innerVAR_OW){
   innerVAR_OW.id_bit = Read();
@@ -63,7 +72,7 @@ InnerVAR_OW processOWData(InnerVAR_OW innerVAR_OW){
   return innerVAR_OW;
 }
 
-int bitSearch(){
+int _bitSearch(int numberOfByte){
   InnerVAR_OW innerVAR_OW;
 
   if(!LastDeviceFlag){
@@ -81,10 +90,10 @@ int bitSearch(){
         innerVAR_OW = processOWData(innerVAR_OW);
         if(innerVAR_OW.noDevice == TRUE)
           break;
-  }while(innerVAR_OW.rom_byte_num<8);
+  }while(innerVAR_OW.rom_byte_num<numberOfByte);
     //done searching
     //if successful
-    if(innerVAR_OW.id_bit_number == 65){
+    if(innerVAR_OW.id_bit_number > (numberOfByte<<3)){
     LastDiscrepancy = innerVAR_OW.last_zero;
     if(LastDiscrepancy == 0){
       LastDeviceFlag = TRUE;
@@ -101,6 +110,10 @@ int bitSearch(){
       innerVAR_OW.search_result = FALSE;
     }
     return innerVAR_OW.search_result;
+}
+
+int bitSearch(){
+  _bitSearch(8);
 }
 
 int targetSetupSearch(unsigned char familyCode){
