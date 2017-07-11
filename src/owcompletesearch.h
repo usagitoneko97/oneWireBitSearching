@@ -2,8 +2,8 @@
 #define _OWCOMPLETESEARCH_H
 
 typedef enum {
-  DEVICE_AVAILABLE,
-  DEVICE_NA
+  DEVICE_AVAILABLE = 0,
+  DEVICE_NA = 1
 }deviceAvail;
 
 deviceAvail resetOW();
