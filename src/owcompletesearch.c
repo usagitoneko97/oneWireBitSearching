@@ -3,7 +3,7 @@
 
 #define VALIDATE_DEV  0
 #define SEND_F0       1
-#define 64BYTE_SEARCH 2
+#define BYTE64_SEARCH 2
 
 int state = 0;
 
