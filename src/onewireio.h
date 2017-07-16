@@ -6,9 +6,12 @@
 /*Global variables*/
 #define TRUE  1
 #define FALSE 0
-
+#define MAX_OWDEVICE  64
 
 unsigned char ROM_NO[8];
+unsigned char RomDataBuffer[MAX_OWDEVICE][8];
+int bufferByteNumber;
+int bufferDeviceNumber;
 int LastDiscrepancy;
 int LastFamilyDiscrepancy;
 int LastDeviceFlag;

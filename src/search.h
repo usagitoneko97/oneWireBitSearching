@@ -1,6 +1,6 @@
 #ifndef _SEARCH_H
 #define _SEARCH_H
-
+#include <stdint.h>
 typedef struct InnerVAR_OW InnerVAR_OW;
 struct InnerVAR_OW {
   int id_bit_number;
@@ -10,8 +10,10 @@ struct InnerVAR_OW {
   unsigned char rom_byte_mask;
   int noDevice;
 };
+void stack_dataBuffer_64(uint8_t data, int numberOfByte);
+void clearDataBuffer_64();
 int firstSearch();
-InnerVAR_OW processOWData(InnerVAR_OW innerVAR_OW);
+InnerVAR_OW processOWData(InnerVAR_OW innerVAR_OW, int numberOfByte);
 int bitSearch();
 int _firstSearch(int numberOfByte);
 int _bitSearch(int numberOfByte);

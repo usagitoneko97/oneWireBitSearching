@@ -78,6 +78,8 @@ void test_owcompletesearch_given_RX_10_given_above_number(void){
   init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
   OW_TxRx_val = 0x10;
   completeSearch_OW();
+  TEST_ASSERT_EQUAL(0xe2, RomDataBuffer[0][0]);
+  TEST_ASSERT_EQUAL(0x4b, RomDataBuffer[1][0]);
   TEST_ASSERT_EQUAL(TRUE, LastDeviceFlag);
   TEST_ASSERT_EQUAL(0, LastDiscrepancy);
   TEST_ASSERT_EQUAL_INT8(0x67, ROM_NO[0]);

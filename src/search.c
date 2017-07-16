@@ -1,7 +1,28 @@
 #include "search.h"
 #include "onewireio.h"
 
+void stack_dataBuffer_64(uint8_t data, int numberOfByte){
+  RomDataBuffer[bufferDeviceNumber][bufferByteNumber++] = data;
+  if(bufferByteNumber == 8){
+    bufferDeviceNumber++;
+    bufferByteNumber = 0;
+  }
+}
+
+void clearDataBuffer_64(){
+  bufferDeviceNumber = 0;
+  bufferByteNumber = 0;
+  int i, j;
+  while(i <MAX_OWDEVICE){
+    for(j = 0;j<8;j++){
+      RomDataBuffer[i][j] = 0;
+    }
+    i++;
+  }
+}
+
 int firstSearch() {
+  clearDataBuffer_64();
   LastDiscrepancy = 0;
   LastDeviceFlag=FALSE;
   LastFamilyDiscrepancy = 0;
@@ -11,6 +32,7 @@ int firstSearch() {
   return bitSearch();
 }
 int _firstSearch(int numberOfByte) {
+  clearDataBuffer_64();
   LastDiscrepancy = 0;
   LastDeviceFlag=FALSE;
   LastFamilyDiscrepancy = 0;
@@ -20,7 +42,7 @@ int _firstSearch(int numberOfByte) {
   return _bitSearch(numberOfByte);
 }
 
-InnerVAR_OW processOWData(InnerVAR_OW innerVAR_OW){
+InnerVAR_OW processOWData(InnerVAR_OW innerVAR_OW, int numberOfByte){
   innerVAR_OW.id_bit = Read();
   innerVAR_OW.cmp_id_bit = Read();
   if(innerVAR_OW.id_bit == 1 && innerVAR_OW.cmp_id_bit == 1){  //no devices
@@ -62,6 +84,7 @@ InnerVAR_OW processOWData(InnerVAR_OW innerVAR_OW){
     //checking of a complete byte
 
     if(innerVAR_OW.rom_byte_mask == 0){
+      stack_dataBuffer_64(ROM_NO[innerVAR_OW.rom_byte_num],numberOfByte);
       innerVAR_OW.rom_byte_mask = 1;
       innerVAR_OW.rom_byte_num++;
     }
@@ -85,7 +108,7 @@ int _bitSearch(int numberOfByte){
 
     //Write(0xF0);
     do{
-        innerVAR_OW = processOWData(innerVAR_OW);
+        innerVAR_OW = processOWData(innerVAR_OW, numberOfByte);
         if(innerVAR_OW.noDevice == TRUE)
           break;
   }while(innerVAR_OW.rom_byte_num<numberOfByte);
