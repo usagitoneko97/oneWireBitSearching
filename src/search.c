@@ -83,7 +83,7 @@ int _bitSearch(int numberOfByte){
     innerVAR_OW.noDevice = FALSE;
     crc8 = 0;
 
-    Write(0xF0);
+    //Write(0xF0);
     do{
         innerVAR_OW = processOWData(innerVAR_OW);
         if(innerVAR_OW.noDevice == TRUE)
