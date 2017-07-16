@@ -5,6 +5,12 @@
 int state = RESET_OW; //initiate to reset_OW
 int result_reset;
 
+#define VALIDATE_DEV  0
+#define SEND_F0       1
+#define BYTE64_SEARCH 2
+
+int state = 0;
+
 deviceAvail resetOW(){
   //uart send F0 9600baud
   //expect receive 0x10 to 0x80
