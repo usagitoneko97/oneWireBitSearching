@@ -70,7 +70,7 @@ void test_owcompletesearch_given_RX_F0_expect_DeviceNA(void)
  * 1 1 1 0 0 0 1 0
  *      e2
  * 0 1 1 0 0 1 1 1
- *       67
+ *       67fi
  */
 void test_owcompletesearch_given_RX_10_given_above_number(void){
   uint8_t fake_id_bit_VAL []=       {0, 1, 0, 0, 0, 1, 1, 1,  0, 1, 0, 1, 0, 0, 1, 0,  0, 1, 0, 0, 0, 1, 1, 0};
