@@ -3,6 +3,11 @@
 #ifndef _ONEWIREIO_H
 #define _ONEWIREIO_H
 
+/*Global variables*/
+#define TRUE  1
+#define FALSE 0
+
+
 unsigned char ROM_NO[8];
 int LastDiscrepancy;
 int LastFamilyDiscrepancy;

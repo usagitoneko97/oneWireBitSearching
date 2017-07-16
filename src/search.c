@@ -1,8 +1,5 @@
 #include "search.h"
 #include "onewireio.h"
-/*Global variables*/
-#define TRUE  1
-#define FALSE 0
 
 int firstSearch() {
   LastDiscrepancy = 0;
@@ -83,6 +80,7 @@ int _bitSearch(int numberOfByte){
     innerVAR_OW.rom_byte_num = 0;
     innerVAR_OW.rom_byte_mask = 1;
     innerVAR_OW.search_result = 0;
+    innerVAR_OW.noDevice = FALSE;
     crc8 = 0;
 
     Write(0xF0);
