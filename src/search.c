@@ -3,7 +3,7 @@
 
 void stack_dataBuffer_64(uint8_t data, int numberOfByte){
   RomDataBuffer[bufferDeviceNumber][bufferByteNumber++] = data;
-  if(bufferByteNumber == 8){
+  if(bufferByteNumber == numberOfByte){
     bufferDeviceNumber++;
     bufferByteNumber = 0;
   }
@@ -42,7 +42,7 @@ int _firstSearch(int numberOfByte) {
   return _bitSearch(numberOfByte);
 }
 
-InnerVAR_OW processOWData(InnerVAR_OW innerVAR_OW, int numberOfByte){
+InnerVAR_OW processOWData(InnerVAR_OW innerVAR_OW){
   innerVAR_OW.id_bit = Read();
   innerVAR_OW.cmp_id_bit = Read();
   if(innerVAR_OW.id_bit == 1 && innerVAR_OW.cmp_id_bit == 1){  //no devices
@@ -81,13 +81,7 @@ InnerVAR_OW processOWData(InnerVAR_OW innerVAR_OW, int numberOfByte){
     innerVAR_OW.id_bit_number++;
     innerVAR_OW.rom_byte_mask <<=1;
 
-    //checking of a complete byte
 
-    if(innerVAR_OW.rom_byte_mask == 0){
-      stack_dataBuffer_64(ROM_NO[innerVAR_OW.rom_byte_num],numberOfByte);
-      innerVAR_OW.rom_byte_mask = 1;
-      innerVAR_OW.rom_byte_num++;
-    }
   }
   return innerVAR_OW;
 }
@@ -108,7 +102,14 @@ int _bitSearch(int numberOfByte){
 
     //Write(0xF0);
     do{
-        innerVAR_OW = processOWData(innerVAR_OW, numberOfByte);
+        innerVAR_OW = processOWData(innerVAR_OW);
+        //checking of a complete byte
+
+        if(innerVAR_OW.rom_byte_mask == 0){
+          stack_dataBuffer_64(ROM_NO[innerVAR_OW.rom_byte_num],numberOfByte);
+          innerVAR_OW.rom_byte_mask = 1;
+          innerVAR_OW.rom_byte_num++;
+        }
         if(innerVAR_OW.noDevice == TRUE)
           break;
   }while(innerVAR_OW.rom_byte_num<numberOfByte);

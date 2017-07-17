@@ -13,7 +13,7 @@ struct InnerVAR_OW {
 void stack_dataBuffer_64(uint8_t data, int numberOfByte);
 void clearDataBuffer_64();
 int firstSearch();
-InnerVAR_OW processOWData(InnerVAR_OW innerVAR_OW, int numberOfByte);
+InnerVAR_OW processOWData(InnerVAR_OW innerVAR_OW);
 int bitSearch();
 int _firstSearch(int numberOfByte);
 int _bitSearch(int numberOfByte);

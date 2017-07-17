@@ -82,6 +82,5 @@ void test_owcompletesearch_given_RX_10_given_above_number(void){
   TEST_ASSERT_EQUAL(0x4b, RomDataBuffer[1][0]);
   TEST_ASSERT_EQUAL(TRUE, LastDeviceFlag);
   TEST_ASSERT_EQUAL(0, LastDiscrepancy);
-  TEST_ASSERT_EQUAL_INT8(0x67, ROM_NO[0]);
-
+  
 }
