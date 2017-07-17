@@ -19,6 +19,9 @@ unsigned char crc8;
 
 int Read();
 void Write(unsigned char byte);
-uint8_t OW_TxRx (uint8_t* TxData);
+void Write_SendArray(uint8_t* data, int length);
+void OW_Tx(uint8_t data);
+uint8_t OW_Rx();
+int isUartFrameError();
 
 #endif // _ONEWIREIO_H

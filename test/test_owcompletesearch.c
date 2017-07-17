@@ -6,7 +6,7 @@
 
 
 
-uint8_t OW_TxRx_val;
+uint8_t OW_Rx_val;
 unsigned char bitPos = 0;
 uint8_t *fake_id_bits = NULL;
 uint8_t *fake_cmp_id_bits = NULL;
@@ -39,15 +39,20 @@ int fake_Read(int numOfCalls){
 int fake_Write(int numOfCalls){
 }
 
-uint8_t fake_OW_TxRx(uint8_t* Txdata, int numOfCalls){
-  return OW_TxRx_val;
+int fake_Write_SendArray(int numOfCalls){
+  
+}
+
+uint8_t fake_OW_Rx(int numOfCalls){
+  return OW_Rx_val;
 }
 
 
 void setUp(void){
-  OW_TxRx_StubWithCallback(fake_OW_TxRx);
+  // OW_Rx_StubWithCallback(fake_OW_Rx);
   Read_StubWithCallback(fake_Read);
   Write_StubWithCallback(fake_Write);
+  Write_SendArray_StubWithCallback(fake_Write_SendArray);
 }
 
 void tearDown(void){
@@ -56,11 +61,11 @@ void tearDown(void){
 }
 
 
-void test_owcompletesearch_given_RX_F0_expect_DeviceNA(void)
+/*void test_owcompletesearch_given_RX_F0_expect_DeviceNA(void)
 {
-  OW_TxRx_val = 0xf0;
+  OW_Rx_val = 0xf0;
   TEST_ASSERT_EQUAL(DEVICE_NA, resetOW());
-}
+}*/
 
 /**
  * Expected 1byte return result
@@ -76,11 +81,23 @@ void test_owcompletesearch_given_RX_10_given_above_number(void){
   uint8_t fake_id_bit_VAL []=       {0, 1, 0, 0, 0, 1, 1, 1,  0, 1, 0, 1, 0, 0, 1, 0,  0, 1, 0, 0, 0, 1, 1, 0};
   uint8_t fake_cmp_id_bit_VAL[] =   {0, 0, 1, 1, 1, 0, 0, 0,  0, 0, 0, 0, 1, 1, 0, 1,  0, 0, 0, 1, 1, 0, 0, 1};
   init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
-  OW_TxRx_val = 0x10;
+  /*Mocking*/
+  OW_Tx_Expect(0xf0);
+  isUartFrameError_ExpectAndReturn(FALSE);
+  OW_Rx_ExpectAndReturn(0x10);
+  //OW_Tx_Expect(sendF0_txData);
+
   completeSearch_OW();
+  completeSearch_OW();  //callback of uartTx from reset
+  completeSearch_OW();  //callback of uartTx from send_f0
   TEST_ASSERT_EQUAL(0xe2, RomDataBuffer[0][0]);
   TEST_ASSERT_EQUAL(0x4b, RomDataBuffer[1][0]);
   TEST_ASSERT_EQUAL(TRUE, LastDeviceFlag);
   TEST_ASSERT_EQUAL(0, LastDiscrepancy);
-  
+
+}
+
+
+void test_OWcompleteSearch_given_10_expect_deviceReady(void){
+  OW_Rx_val = 0x10;
 }

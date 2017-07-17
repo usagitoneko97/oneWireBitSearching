@@ -2,13 +2,12 @@
 #include "onewireio.h"
 #include "search.h"
 
-int state = RESET_OW; //initiate to reset_OW
+
 int result_reset;
 uint8_t result ;
 uint8_t txdata;
-uint8_t sendF0_txData[] = {SEND_1, SEND_1, SEND_1,SEND_1, SEND_0, SEND_0, SEND_0, SEND_0};
-
-deviceAvail resetOW(){
+uint8_t sendF0_txData1[] = {SEND_1, SEND_1, SEND_1,SEND_1, SEND_0, SEND_0, SEND_0, SEND_0};
+/*deviceAvail resetOW(){
   //uart send F0 9600baud
   //expect receive 0x10 to 0x80
   txdata = 0xF0;
@@ -17,26 +16,42 @@ deviceAvail resetOW(){
     return DEVICE_NA;
   else  //TODO add additional condition
     return DEVICE_AVAILABLE;
-}
+}*/
 
-int search_OW(){
-  switch (state) {
+
+
+int search_SM(Event event){
+  uint8_t data;
+  switch (event) {
     case RESET_OW:
-
-        result_reset = resetOW();
-        if(result_reset == DEVICE_AVAILABLE){
-          state = SEND_F0;
+          OW_Tx(0xf0);
           return TRUE;
-        }
-          else if(result_reset == DEVICE_NA)
-          return FALSE;
-        break;
-
-      case SEND_F0:
-          OW_TxRx(sendF0_txData);
-          state = BITSEARCH;
           break;
-      case BITSEARCH:
+    case REPLY:
+          if(isUartFrameError()){
+            //Throw()
+            return FALSE;
+          }
+          data = OW_Rx();
+          if(data == 0xF0){
+            //no device response
+            // Throw();
+            return FALSE;
+          }
+          else if(data >= 0x10 && data <= 0x90){
+            //device is there
+            return TRUE;
+          }
+          else{
+            //unknown state
+            return FALSE;
+          }
+          break;
+    case SEND_F0:
+          Write_SendArray(sendF0_txData1, 8);
+          return TRUE;
+          break;
+    case BITSEARCH:
           if(_firstSearch(1)== FALSE){
             return FALSE;
           }
@@ -45,16 +60,37 @@ int search_OW(){
               return FALSE;
           }
             return TRUE;
-            state = RESET_OW;
+
   }
 }
 
-void completeSearch_OW(){
-  int count = 0;
-  while(count<3){
+int completeSearch_OW(){
+  switch (state) {
+    case RESET:
+        search_SM(RESET_OW);
+        state = 1;  //assume that this fuc will be uart_tx callback
+        break;
+    case 1:
+        if(search_SM(REPLY)){
+          search_SM(SEND_F0);
+          state = 2;  //assume that this fuc will be uart_tx callback
+          return TRUE;
+        }
+        else{
+          //throw();
+          return FALSE;
+        }
+    case 2:
+        if(search_SM(BITSEARCH)){
+          //success
+          state = RESET;
+          return TRUE;
+        }
+        else{
+          // throw();
+          state = RESET;
+          return FALSE; //process done
+        }
+      }
 
-    if(search_OW()==FALSE)
-      break;
-    count++;
-  }
 }
