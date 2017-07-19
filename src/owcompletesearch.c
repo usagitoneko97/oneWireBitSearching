@@ -38,7 +38,8 @@ int search_SM(Event event){
             // Throw();
             return FALSE;
           }
-          else if(data >= 0x10 && data <= 0x90){
+          // else if(data >= 0x10 && data <= 0x90){
+          else if (data & 0xf){
             //device is there
             return TRUE;
           }
