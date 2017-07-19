@@ -40,7 +40,7 @@ int fake_Write(int numOfCalls){
 }
 
 int fake_Write_SendArray(int numOfCalls){
-  
+
 }
 
 uint8_t fake_OW_Rx(int numOfCalls){
@@ -77,7 +77,7 @@ void tearDown(void){
  * 0 1 1 0 0 1 1 1
  *       67fi
  */
-void test_owcompletesearch_given_RX_10_given_above_number(void){
+void test_owcompletesearch_given_OW_presencePulse_RX_10_given_above_number(void){
   uint8_t fake_id_bit_VAL []=       {0, 1, 0, 0, 0, 1, 1, 1,  0, 1, 0, 1, 0, 0, 1, 0,  0, 1, 0, 0, 0, 1, 1, 0};
   uint8_t fake_cmp_id_bit_VAL[] =   {0, 0, 1, 1, 1, 0, 0, 0,  0, 0, 0, 0, 1, 1, 0, 1,  0, 0, 0, 1, 1, 0, 0, 1};
   init64BitId(fake_id_bit_VAL, fake_cmp_id_bit_VAL, 0);
