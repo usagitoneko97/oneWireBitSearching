@@ -39,7 +39,8 @@ int search_SM(Event event){
             return FALSE;
           }
           // else if(data >= 0x10 && data <= 0x90){
-          else if (data & 0xf){
+          /*if the higher bit has response */
+          else if ((data & 0xf0) != 0xf){
             //device is there
             return TRUE;
           }
