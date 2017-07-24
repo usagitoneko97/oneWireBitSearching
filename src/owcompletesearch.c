@@ -18,6 +18,9 @@ uint8_t sendF0_txData1[] = {SEND_1, SEND_1, SEND_1,SEND_1, SEND_0, SEND_0, SEND_
     return DEVICE_AVAILABLE;
 }*/
 
+void clear_OWSm(){
+  state = 0;
+}
 
 
 int search_SM(Event event){

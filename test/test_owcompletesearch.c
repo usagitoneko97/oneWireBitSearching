@@ -97,7 +97,22 @@ void test_owcompletesearch_given_OW_presencePulse_RX_10_given_above_number(void)
 
 }
 
+void test_owcompletesearch_given_OW_0xf0_expect_noDevice(void){
+  /*Mocking*/
+  OW_Tx_Expect(0xf0);
+  isUartFrameError_ExpectAndReturn(FALSE);
+  OW_Rx_ExpectAndReturn(0xf0);
 
-void test_OWcompleteSearch_given_10_expect_deviceReady(void){
-  OW_Rx_val = 0x10;
+  clear_OWSm();
+  completeSearch_OW();
+  TEST_ASSERT_EQUAL(FALSE, completeSearch_OW()); //callback of uartTx from reset
+}
+
+void test_owcompletesearch_given_OW_FrameError_expect_FALSE(void){
+  OW_Tx_Expect(0xf0);
+  isUartFrameError_ExpectAndReturn(TRUE);
+  // OW_Rx_ExpectAndReturn(-1);
+  clear_OWSm();
+  completeSearch_OW();
+  TEST_ASSERT_EQUAL(FALSE, completeSearch_OW()); //callback of uartTx from reset
 }
